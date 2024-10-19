@@ -8,8 +8,7 @@ export class FirebaseMiddleware implements NestMiddleware {
     const path = req.path;
     if (EXCLUDED_PATHS.includes(path)) {
       next();
-    }
-    else {
+    } else {
       const { authorization } = req.headers;
       if (!authorization) {
         res.status(401).send({
@@ -19,15 +18,19 @@ export class FirebaseMiddleware implements NestMiddleware {
         return;
       }
       const token = authorization.split(' ')[1];
-      firebaseAdmin.auth().verifyIdToken(token)
+      firebaseAdmin
+        .auth()
+        .verifyIdToken(token)
         .then((decodedToken) => {
           req.user = decodedToken;
           next();
         })
         .catch((error) => {
-          res.status(401).send('Unauthorized');
-        }
-        );
+          res.status(401).send({
+            message: 'Unauthorized',
+            error: error.message,
+          });
+        });
       next();
     }
   }

@@ -19,10 +19,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   providers: [AppService],
 })
 export class AppModule {
-  // use logger middleware and firebase middleware for all routes
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware, FirebaseMiddleware)
-      .forRoutes('/')
+    consumer.apply(LoggerMiddleware, FirebaseMiddleware).forRoutes('/');
   }
 }

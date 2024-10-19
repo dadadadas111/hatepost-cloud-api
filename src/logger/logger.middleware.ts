@@ -6,7 +6,7 @@ export class LoggerMiddleware implements NestMiddleware {
     Logger.log({
       request: {
         method: req.method,
-        url: req.url,
+        path: req.path,
         headers: req.headers,
         body: req.body,
         params: req.params,

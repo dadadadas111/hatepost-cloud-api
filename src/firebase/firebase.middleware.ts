@@ -12,7 +12,10 @@ export class FirebaseMiddleware implements NestMiddleware {
     else {
       const { authorization } = req.headers;
       if (!authorization) {
-        res.status(401).send('Unauthorized');
+        res.status(401).send({
+          message: 'Unauthorized',
+          error: 'No authorization header provided',
+        });
         return;
       }
       const token = authorization.split(' ')[1];

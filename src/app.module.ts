@@ -4,9 +4,15 @@ import { AppService } from './app.service';
 import { FirebaseModule } from './firebase/firebase.module';
 import { LoggerMiddleware } from 'src/logger/logger.middleware';
 import { FirebaseMiddleware } from 'src/firebase/firebase.middleware';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [FirebaseModule],
+  imports: [
+    FirebaseModule,
+    ConfigModule.forRoot(),
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -15,6 +21,6 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware, FirebaseMiddleware)
-      .forRoutes('*');
+      .forRoutes('/');
   }
 }

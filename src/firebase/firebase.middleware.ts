@@ -6,8 +6,9 @@ import { EXCLUDED_PATHS } from './firebase.excluded-paths';
 export class FirebaseMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
     const path = req.path;
-    if (EXCLUDED_PATHS.includes(path)) {
-      next();
+    const method = req.method;
+    const pathMethod = `${method} ${path}`;
+    if (EXCLUDED_PATHS.includes(pathMethod)) {
     } else {
       const { authorization } = req.headers;
       if (!authorization) {
@@ -23,7 +24,6 @@ export class FirebaseMiddleware implements NestMiddleware {
         .verifyIdToken(token)
         .then((decodedToken) => {
           req.user = decodedToken;
-          next();
         })
         .catch((error) => {
           res.status(401).send({
@@ -31,7 +31,7 @@ export class FirebaseMiddleware implements NestMiddleware {
             error: error.message,
           });
         });
-      next();
     }
+    next();
   }
 }

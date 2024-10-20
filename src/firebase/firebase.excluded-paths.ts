@@ -1,9 +1,10 @@
 const EXCLUDED_PATHS: string[] = [
-  '/',
-  '/about',
-  '/health',
-  '/auth/sign-up',
-  '/auth/sign-in',
+  'GET /',
+  'GET /about',
+  'GET /health',
+  'POST /auth/sign-up',
+  'POST /auth/sign-in',
+  'GET /tag',
 ];
 
 export { EXCLUDED_PATHS };

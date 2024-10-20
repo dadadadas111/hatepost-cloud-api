@@ -7,6 +7,7 @@ import { FirebaseMiddleware } from 'src/firebase/firebase.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ConfigModule.forRoot(),
     AuthModule,
     MongooseModule.forRoot(process.env.MONGODB_URI),
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

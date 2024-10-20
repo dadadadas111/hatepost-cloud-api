@@ -3,10 +3,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Model } from 'mongoose';
 import { User } from 'src/user/user.model';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UserService {
   constructor(
+    @InjectModel(User.name)
     private readonly userModel: Model<User>,
   ) {}
 

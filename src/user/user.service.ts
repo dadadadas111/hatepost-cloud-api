@@ -1,26 +1,75 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Model } from 'mongoose';
+import { User } from 'src/user/user.model';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    private readonly userModel: Model<User>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    try{
+      return await this.userModel.create(createUserDto);
+    }
+    catch(error){
+      Logger.error(error, 'UserService.create');
+      throw new BadRequestException(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findUserByUserId(userId: string) {
+    try{
+      const user = await this.userModel.findOne({userId}).exec();
+      if(!user){
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    }
+    catch(error){
+      Logger.error(error, 'UserService.findUserByUserId');
+      throw new BadRequestException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findUserByEmail(email: string) {
+    try{
+      const user = await this.userModel.findOne({
+        email
+      }).exec();
+      if(!user){
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    }
+    catch(error){
+      Logger.error(error, 'UserService.findUserByEmail');
+      throw new BadRequestException(error);
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    try{
+      delete updateUserDto.userId;
+      delete updateUserDto.email;
+      const user = await this.userModel.findOneAndUpdate({
+        userId
+      }, {
+        $set: updateUserDto
+      }, {
+        new: true
+      })
+      if(!user){
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    }
+    catch(error){
+      Logger.error(error, 'UserService.updateUser');
+      throw new BadRequestException(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }

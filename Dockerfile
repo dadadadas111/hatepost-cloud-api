@@ -8,8 +8,6 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
-COPY .firebase-creds /app/.firebase-creds
-
 RUN yarn build
 
 EXPOSE 3000

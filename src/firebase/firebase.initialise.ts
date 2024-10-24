@@ -12,9 +12,9 @@ try {
   // check if file exists
   fs.accessSync('.firebase-creds/firebase.json', fs.constants.F_OK);
   serviceAccount = JSON.parse(
-    fs.readFileSync('.firebase-creds/firebase.json', 'utf8'),)
-}
-catch (error) {
+    fs.readFileSync('.firebase-creds/firebase.json', 'utf8'),
+  );
+} catch (error) {
   serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 }
 

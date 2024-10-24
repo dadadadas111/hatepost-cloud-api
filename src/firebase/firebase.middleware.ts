@@ -1,4 +1,8 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { firebaseAdmin } from './firebase.initialise';
 import { EXCLUDED_PATHS } from './firebase.excluded-paths';
 

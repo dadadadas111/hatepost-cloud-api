@@ -1,11 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Req,
+  BadRequestException,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   // this controller is special. It take request user data and pass it to service layer
   // this make the controller layer thin and authentication works better
@@ -27,5 +35,4 @@ export class UserController {
   async update(@Body() updateUserDto: UpdateUserDto, @Req() req) {
     return this.userService.updateUser(req.user.userId, updateUserDto);
   }
-
 }

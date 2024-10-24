@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  BadRequestException,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) { }
+  constructor(private readonly postService: PostService) {}
 
   @Post()
   async create(@Body() createPostDto: CreatePostDto, @Req() req) {
@@ -18,7 +28,11 @@ export class PostController {
   }
 
   @Patch(':postId')
-  async update(@Param('postId') postId: string, @Body() updatePostDto: UpdatePostDto, @Req() req) {
+  async update(
+    @Param('postId') postId: string,
+    @Body() updatePostDto: UpdatePostDto,
+    @Req() req,
+  ) {
     try {
       const userId = req.user.user_id;
       return this.postService.updatePost(postId, updatePostDto, userId);

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, Mongoose } from 'mongoose';
+import { Model } from 'mongoose';
 import { Post } from 'src/post/post.model';
 
 @Injectable()
@@ -12,9 +12,7 @@ export class PostService {
   // user can get posts of a specific user
   // user can get posts of a specific tags filter
 
-  constructor(
-    @InjectModel(Post.name) private postModel: Model<Post>,
-  ) { }
+  constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
 
   async create(createPostDto: CreatePostDto, userId: string) {
     try {
@@ -22,21 +20,24 @@ export class PostService {
         ...createPostDto,
         author: userId,
       });
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.create');
       throw new BadRequestException(error);
     }
   }
 
-  async updatePost(postId: string, updatePostDto: UpdatePostDto, userId: string) {
+  async updatePost(
+    postId: string,
+    updatePostDto: UpdatePostDto,
+    userId: string,
+  ) {
     try {
       return await this.postModel.findOneAndUpdate(
         { _id: postId, author: userId },
         updatePostDto,
-        { new: true });
-    }
-    catch (error) {
+        { new: true },
+      );
+    } catch (error) {
       Logger.error(error, 'PostService.updatePost');
       throw new BadRequestException(error);
     }
@@ -48,8 +49,7 @@ export class PostService {
         _id: postId,
         author: userId,
       });
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.deletePost');
       throw new BadRequestException(error);
     }
@@ -58,8 +58,7 @@ export class PostService {
   async getPostById(postId: string) {
     try {
       return await this.postModel.findById(postId);
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.getPostById');
       throw new BadRequestException(error);
     }
@@ -68,8 +67,7 @@ export class PostService {
   async getPostsByUserId(userId: string) {
     try {
       return await this.postModel.find({ author: userId });
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.getPostsByUserId');
       throw new BadRequestException(error);
     }
@@ -79,8 +77,7 @@ export class PostService {
     // random logic to get 30 posts
     try {
       return await this.postModel.find().limit(30);
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.getNewsFeedPosts');
       throw new BadRequestException(error);
     }
@@ -89,8 +86,7 @@ export class PostService {
   async getPostsByTags(tags: string[]) {
     try {
       return await this.postModel.find({ tags: { $in: tags } });
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.getPostsByTags');
       throw new BadRequestException(error);
     }
@@ -113,16 +109,14 @@ export class PostService {
         post.upvoters = post.upvoters.filter((id) => id !== userId);
         post.upvotes--;
         return await post.save();
-      }
-      else if (post.downvoters.includes(userId)) {
+      } else if (post.downvoters.includes(userId)) {
         post.downvoters = post.downvoters.filter((id) => id !== userId);
         post.downvotes--;
       }
       post.upvoters.push(userId);
       post.upvotes++;
       return await post.save();
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.upvotePost');
       throw new BadRequestException(error);
     }
@@ -135,20 +129,16 @@ export class PostService {
         post.downvoters = post.downvoters.filter((id) => id !== userId);
         post.downvotes--;
         return await post.save();
-      }
-      else if (post.upvoters.includes(userId)) {
+      } else if (post.upvoters.includes(userId)) {
         post.upvoters = post.upvoters.filter((id) => id !== userId);
         post.upvotes--;
       }
       post.downvoters.push(userId);
       post.downvotes++;
       return await post.save();
-    }
-    catch (error) {
+    } catch (error) {
       Logger.error(error, 'PostService.downvotePost');
       throw new BadRequestException(error);
     }
   }
-
-
 }

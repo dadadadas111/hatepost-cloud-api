@@ -93,14 +93,12 @@ jobs:
     - name: Deploy to Production Server
       if: github.ref == 'refs/heads/master'
       run: |
-        echo "Deploying to production..."
-        # ssh user@production-server
+        curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_PRODUCTION }}
 
     - name: Deploy to Staging Server
       if: startsWith(github.ref, 'refs/heads/staging/')
       run: |
-        echo "Deploying to staging..."
-        # ssh user@staging-server
+        curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
 
     - name: Log out from Docker
       run: docker logout

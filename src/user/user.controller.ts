@@ -20,7 +20,7 @@ export class UserController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Req() req) {
-    if (req.user.userId !== createUserDto.userId) {
+    if (req.user.user_id !== createUserDto.userId) {
       throw new BadRequestException('User not authorized');
     }
     return this.userService.create(createUserDto);
@@ -28,11 +28,11 @@ export class UserController {
 
   @Get()
   async getCurrentUser(@Req() req) {
-    return this.userService.findUserByUserId(req.user.userId);
+    return this.userService.findUserByUserId(req.user.user_id);
   }
 
   @Patch()
   async update(@Body() updateUserDto: UpdateUserDto, @Req() req) {
-    return this.userService.updateUser(req.user.userId, updateUserDto);
+    return this.userService.updateUser(req.user.user_id, updateUserDto);
   }
 }

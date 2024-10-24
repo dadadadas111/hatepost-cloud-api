@@ -12,8 +12,8 @@ export class Tag {
     @Prop({ maxlength: 100 })
     description: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Tag', index: true })
-    superTag: Tag;
+    @Prop({ index: true })
+    superTag: string;
 
 }
 

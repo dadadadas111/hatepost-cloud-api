@@ -29,20 +29,20 @@ export class User {
     @Prop({required: false})
     phoneNumber: string;
 
-    @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], index: true, default: [] })
-    friends: User[];
+    @Prop({ index: true, default: [] })
+    friends: string[];
 
-    @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], index: true, default: [] })
-    friendRequests: User[];
+    @Prop({ index: true, default: [] })
+    friendRequests: string[];
 
-    @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], index: true, default: [] })
-    sentRequests: User[];
+    @Prop({ index: true, default: [] })
+    sentRequests: string[];
 
-    @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], index: true, default: [] })
-    blockedUsers: User[];
+    @Prop({ index: true, default: [] })
+    blockedUsers: string[];
 
-    @Prop({ type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], index: true, default: [] })
-    blockedBy: User[];
+    @Prop({ index: true, default: [] })
+    blockedBy: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

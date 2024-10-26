@@ -19,4 +19,9 @@ export class AppController {
   getHealth(): string {
     return 'OK';
   }
+
+  @Get('/send-email')
+  async sendEmailTest(){
+    return await this.appService.sendEmailTest();
+  }
 }

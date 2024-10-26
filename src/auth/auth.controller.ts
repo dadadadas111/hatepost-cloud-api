@@ -20,4 +20,41 @@ export class AuthController {
   ) {
     return this.authService.signIn(email, password);
   }
+
+  @Post('reset-password')
+  async resetPassword(@Body('email') email: string) {
+    return this.authService.resetPassword(email);
+  }
+
+  @Post('send-email-verification')
+  async sendEmailVerification(@Body('idToken') idToken: string) {
+    return this.authService.sendEmailVerification(idToken);
+  }
+
+  @Post('send-code-email-verification')
+  async sendCodeEmailVerification(@Body('email') email: string) {
+    return this.authService.sendCodeEmailVerification(email);
+  }
+
+  @Post('verify-code-email-verification')
+  async verifyCodeEmailVerification(
+    @Body('email') email: string,
+    @Body('code') code: number,
+  ) {
+    return this.authService.verifyCodeEmailVerification(email, code);
+  }
+
+  @Post('send-code-reset-password')
+  async sendCodeResetPassword(@Body('email') email: string) {
+    return this.authService.sendPasswordResetEmailCode(email);
+  }
+
+  @Post('verify-code-reset-password')
+  async verifyCodeResetPassword(
+    @Body('email') email: string,
+    @Body('code') code: number,
+    @Body('newPassword') newPassword: string,
+  ) {
+    return this.authService.verifyPasswordResetEmailCode(email, code, newPassword);
+  }
 }

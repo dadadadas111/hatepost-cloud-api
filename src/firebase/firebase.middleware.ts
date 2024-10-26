@@ -12,8 +12,10 @@ export class FirebaseMiddleware implements NestMiddleware {
     const path = req.path;
     const method = req.method;
     const pathMethod = `${method} ${path}`;
-    if (EXCLUDED_PATHS.includes(pathMethod)) {
-    } else {
+    if (
+      // for any of excluded paths, if it begins with pathMethod, then return next()
+      !EXCLUDED_PATHS.some((excludedPath) => pathMethod.startsWith(excludedPath))
+    ) {
       const { authorization } = req.headers;
       if (!authorization) {
         throw new UnauthorizedException('Unauthorized');

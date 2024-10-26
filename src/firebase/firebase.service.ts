@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { firebaseAdmin } from './firebase.initialise';
 
 @Injectable()
 export class FirebaseService {
@@ -106,5 +107,34 @@ export class FirebaseService {
       Logger.error(error, 'FirebaseService.firebaseSendEmailVerification');
       throw new BadRequestException(error);
     }
+  }
+
+  async firebaseVerifyEmail(email: string) {
+    const user = await firebaseAdmin.auth().getUserByEmail(email);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    if (user.emailVerified) {
+      throw new BadRequestException('Email already verified');
+    }
+    await firebaseAdmin.auth().updateUser(user.uid, {
+      emailVerified: true,
+    });
+    return {
+      success: true,
+    };
+  }
+
+  async firebaseResetPasswordByCode(email: string, newPassword: string) {
+    const user = await firebaseAdmin.auth().getUserByEmail(email);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    await firebaseAdmin.auth().updateUser(user.uid, {
+      password: newPassword,
+    });
+    return {
+      success: true,
+    };
   }
 }

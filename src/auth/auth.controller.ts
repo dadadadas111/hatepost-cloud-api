@@ -20,4 +20,14 @@ export class AuthController {
   ) {
     return this.authService.signIn(email, password);
   }
+
+  @Post('reset-password')
+  async resetPassword(@Body('email') email: string) {
+    return this.authService.resetPassword(email);
+  }
+
+  @Post('send-email-verification')
+  async sendEmailVerification(@Body('idToken') idToken: string) {
+    return this.authService.sendEmailVerification(idToken);
+  }
 }

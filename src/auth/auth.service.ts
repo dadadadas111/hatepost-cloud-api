@@ -39,7 +39,7 @@ export class AuthService {
       await this.mailerService.sendMail({
         to: email,
         subject: 'Email Verification',
-        text: `Your code is ${code}`,
+        html: this.formatEmailContent(`Your email verification code is ${code}`),
       });
       return {
         success: true
@@ -82,7 +82,7 @@ export class AuthService {
       await this.mailerService.sendMail({
         to: email,
         subject: 'Reset Password',
-        text: `Your code is ${code}`,
+        html: this.formatEmailContent(`Your reset password code is ${code}`),
       });
       return {
         success: true
@@ -114,6 +114,24 @@ export class AuthService {
       Logger.error(error, 'AuthService.verifyPasswordResetEmailCode');
       throw new BadRequestException(error);
     }
+  }
+
+  formatEmailContent(content) {
+    // from Hong-Phot.com
+    // based on mode, this email is for verification or reset password
+    // if you dont intent to do..., you can ignore this email
+    // ending (thanks, regards, etc)
+    const html = `
+      <div style="font-family: Arial, sans-serif; font-size: 16px;">
+        <p>Dear HongPhot user,</p>
+        <p>${content}</p>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>Thanks,</p>
+        <p>HongPhot Team</p>
+      </div>
+    `;
+
+    return html;
   }
 
 }

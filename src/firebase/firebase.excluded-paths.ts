@@ -4,6 +4,8 @@ const EXCLUDED_PATHS: string[] = [
   'GET /health',
   'POST /auth/sign-up',
   'POST /auth/sign-in',
+  'POST /auth/reset-password',
+  'POST /auth/send-email-verification',
   'GET /tag',
 ];
 

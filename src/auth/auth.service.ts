@@ -1,16 +1,23 @@
 import { Cache } from 'cache-manager';
-import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { MailerService } from '@nestjs-modules/mailer';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly firebaseService: FirebaseService,
-    private readonly mailerService: MailerService,
     @Inject('CACHE_MANAGER')
-    private cacheManager: Cache
-  ) { }
+    private cacheManager: Cache,
+    @InjectQueue('send-email')
+    private readonly sendEmailQueue: Queue,
+  ) {}
 
   async signUp(email: string, password: string) {
     return this.firebaseService.firebaseSignUp(email, password);
@@ -35,17 +42,26 @@ export class AuthService {
     // using cache to store the code
     try {
       const code = Math.floor(100000 + Math.random() * 900000);
-      await this.cacheManager.set(email, code, {ttl : 300} as any);
-      await this.mailerService.sendMail({
-        to: email,
-        subject: 'Email Verification',
-        html: this.formatEmailContent(`Your email verification code is ${code}`),
-      });
+      await this.cacheManager.set(email, code, { ttl: 300 } as any);
+      // await this.mailerService.sendMail({
+      //   to: email,
+      //   subject: 'Email Verification',
+      //   html: this.formatEmailContent(`Your email verification code is ${code}`),
+      // });
+      await this.sendEmailQueue.add(
+        'send-email-verification',
+        {
+          email,
+          code,
+        },
+        {
+          removeOnComplete: true,
+        },
+      );
       return {
-        success: true
-      }
-    }
-    catch (error) {
+        success: true,
+      };
+    } catch (error) {
       Logger.error(error, 'AuthService.sendCodeEmailVerification');
       throw new BadRequestException(error);
     }
@@ -60,14 +76,13 @@ export class AuthService {
         // set to firebase that email is verified
         await this.firebaseService.firebaseVerifyEmail(email);
         return {
-          success: true
-        }
+          success: true,
+        };
       }
       return {
-        success: false
-      }
-    }
-    catch (error) {
+        success: false,
+      };
+    } catch (error) {
       Logger.error(error, 'AuthService.verifyCodeEmailVerification');
       throw new BadRequestException(error);
     }
@@ -78,60 +93,56 @@ export class AuthService {
     // using cache to store the code
     try {
       const code = Math.floor(100000 + Math.random() * 900000);
-      await this.cacheManager.set(email, code, {ttl : 300} as any);
-      await this.mailerService.sendMail({
-        to: email,
-        subject: 'Reset Password',
-        html: this.formatEmailContent(`Your reset password code is ${code}`),
-      });
+      await this.cacheManager.set(email, code, { ttl: 300 } as any);
+      // await this.mailerService.sendMail({
+      //   to: email,
+      //   subject: 'Reset Password',
+      //   html: this.formatEmailContent(`Your reset password code is ${code}`),
+      // });
+      await this.sendEmailQueue.add(
+        'send-reset-password-email',
+        {
+          email,
+          code,
+        },
+        {
+          removeOnComplete: true,
+        },
+      );
       return {
-        success: true
-      }
-    }
-    catch (error) {
+        success: true,
+      };
+    } catch (error) {
       Logger.error(error, 'AuthService.sendPasswordResetEmailCode');
       throw new BadRequestException(error);
     }
   }
 
-  async verifyPasswordResetEmailCode(email: string, code: number, newPassword: string) {
+  async verifyPasswordResetEmailCode(
+    email: string,
+    code: number,
+    newPassword: string,
+  ) {
     // this verify the code
     try {
       const cacheCode = await this.cacheManager.get(email);
       if (cacheCode === code) {
         await this.cacheManager.del(email);
         // set new password
-        await this.firebaseService.firebaseResetPasswordByCode(email, newPassword);
+        await this.firebaseService.firebaseResetPasswordByCode(
+          email,
+          newPassword,
+        );
         return {
-          success: true
-        }
+          success: true,
+        };
       }
       return {
-        success: false
-      }
-    }
-    catch (error) {
+        success: false,
+      };
+    } catch (error) {
       Logger.error(error, 'AuthService.verifyPasswordResetEmailCode');
       throw new BadRequestException(error);
     }
   }
-
-  formatEmailContent(content) {
-    // from Hong-Phot.com
-    // based on mode, this email is for verification or reset password
-    // if you dont intent to do..., you can ignore this email
-    // ending (thanks, regards, etc)
-    const html = `
-      <div style="font-family: Arial, sans-serif; font-size: 16px;">
-        <p>Dear HongPhot user,</p>
-        <p>${content}</p>
-        <p>If you did not request this, please ignore this email.</p>
-        <p>Thanks,</p>
-        <p>HongPhot Team</p>
-      </div>
-    `;
-
-    return html;
-  }
-
 }

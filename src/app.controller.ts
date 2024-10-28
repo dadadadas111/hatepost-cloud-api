@@ -21,7 +21,7 @@ export class AppController {
   }
 
   @Get('/send-email')
-  async sendEmailTest(){
+  async sendEmailTest() {
     return await this.appService.sendEmailTest();
   }
 }

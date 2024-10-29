@@ -145,4 +145,8 @@ export class AuthService {
       throw new BadRequestException(error);
     }
   }
+
+  async checkExistingEmail(email: string) {
+    return this.firebaseService.firebaseCheckExistingEmail(email);
+  }
 }

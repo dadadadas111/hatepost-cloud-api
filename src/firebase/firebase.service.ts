@@ -125,6 +125,13 @@ export class FirebaseService {
     };
   }
 
+  async firebaseCheckExistingEmail(email: string) {
+    const user = await firebaseAdmin.auth().getUserByEmail(email);
+    return {
+      exist: !!user,
+    }
+  }
+
   async firebaseResetPasswordByCode(email: string, newPassword: string) {
     const user = await firebaseAdmin.auth().getUserByEmail(email);
     if (!user) {

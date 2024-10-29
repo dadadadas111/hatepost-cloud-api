@@ -61,4 +61,9 @@ export class AuthController {
       newPassword,
     );
   }
+
+  @Post('check-existing-email')
+  async checkExistingEmail(@Body('email') email: string) {
+    return this.authService.checkExistingEmail(email);
+  }
 }

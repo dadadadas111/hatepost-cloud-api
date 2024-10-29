@@ -126,9 +126,16 @@ export class FirebaseService {
   }
 
   async firebaseCheckExistingEmail(email: string) {
-    const user = await firebaseAdmin.auth().getUserByEmail(email);
-    return {
-      exist: !!user,
+    try {
+      const user = await firebaseAdmin.auth().getUserByEmail(email);
+      return {
+        exist: !!user,
+      }
+    }
+    catch (error) {
+      return {
+        exist: false,
+      }
     }
   }
 

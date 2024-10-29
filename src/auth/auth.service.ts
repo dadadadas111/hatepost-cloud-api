@@ -20,7 +20,10 @@ export class AuthService {
   ) {}
 
   async signUp(email: string, password: string) {
-    return this.firebaseService.firebaseSignUp(email, password);
+    const user = this.firebaseService.firebaseSignUp(email, password);
+    // set to firebase that email is verified
+    await this.firebaseService.firebaseVerifyEmail(email);
+    return user;
   }
 
   async signIn(email: string, password: string) {
@@ -73,8 +76,6 @@ export class AuthService {
       const cacheCode = await this.cacheManager.get(email);
       if (cacheCode === code) {
         await this.cacheManager.del(email);
-        // set to firebase that email is verified
-        await this.firebaseService.firebaseVerifyEmail(email);
         return {
           success: true,
         };

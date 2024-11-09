@@ -7,15 +7,15 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  async sendEmailTest(){
-    const to = 'long6athcskl@gmail.com'
+  async sendEmailTest() {
+    const to = 'long6athcskl@gmail.com';
     await this.mailerService.sendMail({
       to,
       subject: 'Testing Nest MailerModule ✔',
       text: 'welcome',
     });
     return {
-      success: true
-    }
+      success: true,
+    };
   }
 }

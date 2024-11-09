@@ -55,6 +55,15 @@ export class AuthController {
     @Body('code') code: number,
     @Body('newPassword') newPassword: string,
   ) {
-    return this.authService.verifyPasswordResetEmailCode(email, code, newPassword);
+    return this.authService.verifyPasswordResetEmailCode(
+      email,
+      code,
+      newPassword,
+    );
+  }
+
+  @Post('check-existing-email')
+  async checkExistingEmail(@Body('email') email: string) {
+    return this.authService.checkExistingEmail(email);
   }
 }

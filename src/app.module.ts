@@ -1,10 +1,10 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FirebaseModule } from './firebase/firebase.module';
 import { LoggerMiddleware } from 'src/logger/logger.middleware';
 import { FirebaseMiddleware } from 'src/firebase/firebase.middleware';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TagModule } from './tag/tag.module';
@@ -13,6 +13,7 @@ import { UserModule } from './user/user.module';
 import { CacheModule, CacheStore } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -29,12 +30,19 @@ import { MailerModule } from '@nestjs-modules/mailer';
             host: redisHost,
             port: parseInt(redisPort),
           },
-        })
+        });
         return {
-          store: (store as unknown) as CacheStore,
-          ttl: 60000
+          store: store as unknown as CacheStore,
+          ttl: 60000,
         };
-      }
+      },
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_CONNECTION.split(':')[0],
+        port: parseInt(process.env.REDIS_CONNECTION.split(':')[1]),
+        password: process.env.REDIS_PASSWORD,
+      },
     }),
     MailerModule.forRootAsync({
       useFactory: async () => ({
@@ -46,12 +54,12 @@ import { MailerModule } from '@nestjs-modules/mailer';
           auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
-          }
+          },
         },
         defaults: {
-          from: process.env.SMTP_USER
-        }
-      })
+          from: process.env.SMTP_USER,
+        },
+      }),
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     TagModule,
@@ -61,10 +69,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
   ],
   controllers: [AppController],
   providers: [AppService],
-  exports: [AppService]
+  exports: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware, FirebaseMiddleware).forRoutes('/')
+    consumer.apply(LoggerMiddleware, FirebaseMiddleware).forRoutes('/');
   }
 }

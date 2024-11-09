@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
+    "@nestjs/bull": "^10.2.1",
     "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
@@ -28,6 +29,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^10.0.10",
     "@nestjs/platform-express": "^10.0.0",
+    "bull": "^4.16.3",
     "cache-manager": "^5.3.1",
     "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "^0.5.1",

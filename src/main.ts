@@ -7,7 +7,7 @@ async function bootstrap() {
   app.enableCors({
     origin: 'https://dadadadas111.github.io',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   });
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());

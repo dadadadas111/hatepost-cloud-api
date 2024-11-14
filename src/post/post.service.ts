@@ -102,7 +102,7 @@ export class PostService {
   async upvotePost(postId: string, userId: string) {
     try {
       const post = await this.postModel.findById(postId);
-      if (!post){
+      if (!post) {
         throw new BadRequestException('Post not found');
       }
       // post.upvoters is an array of user who upvoted the post
@@ -128,7 +128,7 @@ export class PostService {
   async downvotePost(postId: string, userId: string) {
     try {
       const post = await this.postModel.findById(postId);
-      if (!post){
+      if (!post) {
         throw new BadRequestException('Post not found');
       }
       if (post.downvoters.includes(userId)) {

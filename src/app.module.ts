@@ -22,8 +22,12 @@ import { BullModule } from '@nestjs/bull';
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async () => {
-        const redisHost = (process.env.REDIS_CONNECTION as string).split(':')[0];
-        const redisPort = (process.env.REDIS_CONNECTION as string).split(':')[1];
+        const redisHost = (process.env.REDIS_CONNECTION as string).split(
+          ':',
+        )[0];
+        const redisPort = (process.env.REDIS_CONNECTION as string).split(
+          ':',
+        )[1];
         const store = await redisStore({
           password: process.env.REDIS_PASSWORD,
           socket: {

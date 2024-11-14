@@ -3,7 +3,7 @@ import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get()
   getHello(): string {
@@ -32,6 +32,7 @@ export class AppController {
 
   @Get('/get-stars')
   async getStars() {
-    return await this.appService.getStars();
+    const stars = await this.appService.getStars();
+    return { stars: stars || 0 }
   }
 }

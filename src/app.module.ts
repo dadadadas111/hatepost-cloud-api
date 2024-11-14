@@ -22,8 +22,12 @@ import { BullModule } from '@nestjs/bull';
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async () => {
-        const redisHost = process.env.REDIS_CONNECTION.split(':')[0];
-        const redisPort = process.env.REDIS_CONNECTION.split(':')[1];
+        const redisHost = (process.env.REDIS_CONNECTION as string).split(
+          ':',
+        )[0];
+        const redisPort = (process.env.REDIS_CONNECTION as string).split(
+          ':',
+        )[1];
         const store = await redisStore({
           password: process.env.REDIS_PASSWORD,
           socket: {
@@ -39,8 +43,8 @@ import { BullModule } from '@nestjs/bull';
     }),
     BullModule.forRoot({
       redis: {
-        host: process.env.REDIS_CONNECTION.split(':')[0],
-        port: parseInt(process.env.REDIS_CONNECTION.split(':')[1]),
+        host: (process.env.REDIS_CONNECTION as string).split(':')[0],
+        port: parseInt((process.env.REDIS_CONNECTION as string).split(':')[1]),
         password: process.env.REDIS_PASSWORD,
       },
     }),
@@ -49,7 +53,7 @@ import { BullModule } from '@nestjs/bull';
         verifyTransporters: true,
         transport: {
           host: process.env.SMTP_HOST,
-          port: parseInt(process.env.SMTP_PORT),
+          port: parseInt(process.env.SMTP_PORT as string),
           secure: false,
           auth: {
             user: process.env.SMTP_USER,
@@ -61,7 +65,7 @@ import { BullModule } from '@nestjs/bull';
         },
       }),
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forRoot(process.env.MONGODB_URI as string),
     TagModule,
     PostModule,
     UserModule,

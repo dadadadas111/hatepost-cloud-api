@@ -15,7 +15,8 @@ try {
     fs.readFileSync('.firebase-creds/firebase.json', 'utf8'),
   );
 } catch (error) {
-  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  if (process.env.FIREBASE_SERVICE_ACCOUNT)
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 }
 
 if (!serviceAccount) {

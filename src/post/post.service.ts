@@ -102,6 +102,9 @@ export class PostService {
   async upvotePost(postId: string, userId: string) {
     try {
       const post = await this.postModel.findById(postId);
+      if (!post) {
+        throw new BadRequestException('Post not found');
+      }
       // post.upvoters is an array of user who upvoted the post
       // if the user is already in the upvoters array, then remove the user from the upvoters array
       // if the user is not in the upvoters array, then add the user to the upvoters array
@@ -125,6 +128,9 @@ export class PostService {
   async downvotePost(postId: string, userId: string) {
     try {
       const post = await this.postModel.findById(postId);
+      if (!post) {
+        throw new BadRequestException('Post not found');
+      }
       if (post.downvoters.includes(userId)) {
         post.downvoters = post.downvoters.filter((id) => id !== userId);
         post.downvotes--;

@@ -130,12 +130,11 @@ export class FirebaseService {
       const user = await firebaseAdmin.auth().getUserByEmail(email);
       return {
         exist: !!user,
-      }
-    }
-    catch (error) {
+      };
+    } catch (error) {
       return {
         exist: false,
-      }
+      };
     }
   }
 

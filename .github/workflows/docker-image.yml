@@ -81,8 +81,20 @@ jobs:
     # Deploy to the correct environment
     - name: Deploy to Production Server
       if: github.ref == 'refs/heads/master'
+      env:
+        ENCODED_SSH_KEY: ${{ secrets.SSH_KEY }}
       run: |
-        curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_PRODUCTION }}
+        echo "$ENCODED_SSH_KEY" | base64 -d > fsh_embbed_team.pem
+        chmod 600 fsh_embbed_team.pem
+
+        ssh -i fsh_embbed_team.pem -o StrictHostKeyChecking=no ${{ secrets.SERVER_INFO }} -p ${{ secrets.SERVER_PORT }} << 'EOF'
+
+        sudo docker stop hatepost-cloud-api || true
+        sudo docker rm hatepost-cloud-api || true
+        sudo docker pull ghcr.io/dadadadas111/hatepost-cloud-api:latest
+        sudo docker run -d -p 443:3000 -p 80:3000 --env-file ~/hatepost/.env --name hatepost-cloud-api ghcr.io/dadadadas111/hatepost-cloud-api:latest
+
+        EOF
 
     - name: Deploy to Staging Server
       if: startsWith(github.ref, 'refs/heads/staging/')

@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'https://dadadadas111.github.io',
+    origin: 'https://fumi.fyi/',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   });

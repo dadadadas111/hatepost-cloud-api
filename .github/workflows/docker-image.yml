@@ -92,7 +92,7 @@ jobs:
         sudo docker stop hatepost-cloud-api || true
         sudo docker rm hatepost-cloud-api || true
         sudo docker pull ghcr.io/dadadadas111/hatepost-cloud-api:latest
-        sudo docker run -d -p 443:3000 -p 80:3000 --env-file ~/hatepost/.env --name hatepost-cloud-api ghcr.io/dadadadas111/hatepost-cloud-api:latest
+        sudo docker run -d -p 3000:3000 --env-file ~/hatepost/.env --name hatepost-cloud-api ghcr.io/dadadadas111/hatepost-cloud-api:latest
 
         EOF
 
